@@ -100,9 +100,25 @@ def trussopt(width, height, st, sc, jc):
         if stopViolation(Nd, PML, dof, st, sc, u, jc): break
     print("Volume: %f" % (vol)) 
     plotTruss(Nd, Cn, a, q, max(a) * 1e-3, "Finished", False)
+    print("Cn", Cn)
+    print("a", a)
+    # Active members: where the 4th column is True (or 1.0)
+    active_mask = PML[:, 3] == 1.0  # or use == True
+
+    # Inactive members: where the 4th column is False (or 0.0)
+    inactive_mask = PML[:, 3] == 0.0  # or use == False
+
+    # Count them
+    num_active = np.sum(active_mask)
+    num_inactive = np.sum(inactive_mask)
+
+    print(f"Active members: {num_active}")
+    print(f"Inactive members: {num_inactive}")
+
+    return Nd, Cn, a, q, u
 #Execution function when called directly by Python
 if __name__ =='__main__': 
-    trussopt(width = 20, height = 10, st = 1, sc =1, jc = 0)
+    trussopt(width = 20, height = 10, st = 1, sc =1, jc = 1) #much larger jc value if you want only a handful of members in the final design.
 ##########################################################################
 # This Python script was written by L. He, M. Gilbert, X. Song           #
 # University of Sheffield, United Kingdom                                #
